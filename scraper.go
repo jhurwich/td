@@ -25,7 +25,7 @@ const MaxQueueSize = 10000
 
 var (
 	inlineSearch   = regexp.MustCompile(`(http:\/\/\d{2}\.media\.tumblr\.com\/\w{32}\/tumblr_inline_\w+\.\w+)`) // FIXME: Possibly buggy/unoptimized.
-	videoSearch    = regexp.MustCompile(`"hdUrl":".*(tumblr_\w+)"`)                                           // fuck it
+	videoSearch    = regexp.MustCompile(`"hdUrl":".*(tumblr_\w+)"`)                                             // fuck it
 	altVideoSearch = regexp.MustCompile(`source src=".*(tumblr_\w+)(?:\/\d+)?" type`)
 	gfycatSearch   = regexp.MustCompile(`href="https?:\/\/(?:www\.)?gfycat\.com\/(\w+)`)
 )
@@ -105,9 +105,8 @@ func parseVideoPost(post Post) (files []File) {
 			return
 		}
 
-
 		videoURL := strings.Replace(regextest[1], `\`, ``, -1)
-    videoURL = "https://vtt.tumblr.com/" + videoURL;
+		videoURL = "https://vtt.tumblr.com/" + videoURL
 
 		// If there are problems with downloading video, the below part may be the cause.
 		// videoURL = strings.Replace(videoURL, `/480`, ``, -1)
@@ -229,8 +228,8 @@ func scrape(u *User, limiter <-chan time.Time) <-chan File {
 				// Goddamnit tumblr, make a consistent API that doesn't
 				// fucking return strings AND booleans in the same field
 
-				ioutil.WriteFile("json_error.txt", contents, 0644)
-				log.Println("Unmarshal:", err)
+				ioutil.WriteFile(fmt.Sprintf("%s_json_error.txt", u.name), contents, 0644)
+				log.Printf("[%s] Unmarshal: %s\n", u.name, err)
 			}
 
 			numPosts = blog.TotalPosts
